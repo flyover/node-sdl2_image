@@ -1,9 +1,9 @@
 {
-  "name": "flyover-node-sdl2_image",
+  "name": "@flyover/node-sdl2_image",
   "version": "0.0.0",
   "author": "Flyover Games",
   "homepage": "http://flyovergames.com",
-  "description": "node sdl2_image module",
+  "description": "Node SDL2_image Package",
   "contributors": [
     "Isaac Burns <isaacburns@gmail.com>"
   ],
