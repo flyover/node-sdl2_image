@@ -1,0 +1,30 @@
+{
+  "name": "flyover-node-sdl2_image",
+  "version": "0.0.0",
+  "author": "Flyover Games",
+  "homepage": "http://flyovergames.com",
+  "description": "node sdl2_image module",
+  "contributors": [
+    "Isaac Burns <isaacburns@gmail.com>"
+  ],
+  "main": "node-sdl2_image.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flyover/node-sdl2_image.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "nan": "^1.4"
+  },
+  "scripts": {
+    "install": "node-gyp rebuild"
+  },
+  "gypfile": true,
+  "bugs": {
+    "url": "https://github.com/flyover/node-sdl2_image/issues"
+  },
+  "keywords": [
+    "SDL2",
+    "SDL2_image"
+  ]
+}

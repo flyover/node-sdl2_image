@@ -1,0 +1,263 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		738692C91ED6751C8DA9F158 /* node-sdl2_image.cc in Sources */ = {isa = PBXBuildFile; fileRef = 415754A09726694688BAE0E8 /* node-sdl2_image.cc */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		415754A09726694688BAE0E8 /* node-sdl2_image.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "node-sdl2_image.cc"; sourceTree = "<group>"; };
+		8994377DE8DE93E29A87E9A6 /* node-sdl2_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "node-sdl2_image.h"; sourceTree = "<group>"; };
+		ABC8A8550EC270548899EF71 /* node-sdl2_image.gyp */ = {isa = PBXFileReference; explicitFileType = sourcecode; path = "node-sdl2_image.gyp"; sourceTree = "<group>"; };
+		FBCB92A1753E6DE6458671C7 /* libnode-sdl2_image-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libnode-sdl2_image-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EDACD3301D31504951B62A92 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		02CFA454B6AE04EE28A2A7FA /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				415754A09726694688BAE0E8 /* node-sdl2_image.cc */,
+				8994377DE8DE93E29A87E9A6 /* node-sdl2_image.h */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1EF4326911E44003E1A340E7 /* Build */ = {
+			isa = PBXGroup;
+			children = (
+				ABC8A8550EC270548899EF71 /* node-sdl2_image.gyp */,
+			);
+			name = Build;
+			sourceTree = "<group>";
+		};
+		2E8BAFBE6894DCBCF5FEDA02 = {
+			isa = PBXGroup;
+			children = (
+				02CFA454B6AE04EE28A2A7FA /* Source */,
+				538A98746CF984AFE3D5C018 /* Products */,
+				1EF4326911E44003E1A340E7 /* Build */,
+			);
+			sourceTree = "<group>";
+		};
+		538A98746CF984AFE3D5C018 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FBCB92A1753E6DE6458671C7 /* libnode-sdl2_image-osx.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		56CD08450EAA8C5433CE60DD /* libnode-sdl2_image-osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5E87BCA7738CBC845407B8CE /* Build configuration list for PBXNativeTarget "libnode-sdl2_image-osx" */;
+			buildPhases = (
+				EF62A723B91A9A08BFD9AA45 /* Sources */,
+				EDACD3301D31504951B62A92 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "libnode-sdl2_image-osx";
+			productName = "node-sdl2_image-osx";
+			productReference = FBCB92A1753E6DE6458671C7 /* libnode-sdl2_image-osx.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8BA1DEF7DD9F370A02656CE3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+			};
+			buildConfigurationList = 1A1A149D975E607E59D3D494 /* Build configuration list for PBXProject "node-sdl2_image" */;
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 1;
+			mainGroup = 2E8BAFBE6894DCBCF5FEDA02;
+			projectDirPath = ..;
+			projectRoot = "";
+			targets = (
+				56CD08450EAA8C5433CE60DD /* libnode-sdl2_image-osx */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EF62A723B91A9A08BFD9AA45 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				738692C91ED6751C8DA9F158 /* node-sdl2_image.cc in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0323CA18A99E38D50A603240 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				INTERMEDIATE_DIR = "$(PROJECT_DERIVED_FILE_DIR)/$(CONFIGURATION)";
+				SDKROOT = macosx;
+				SHARED_INTERMEDIATE_DIR = "$(SYMROOT)/DerivedSources/$(CONFIGURATION)";
+				USE_HEADERMAP = NO;
+			};
+			name = Debug;
+		};
+		58E17148B8B79230D58022E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				INTERMEDIATE_DIR = "$(PROJECT_DERIVED_FILE_DIR)/$(CONFIGURATION)";
+				SDKROOT = macosx;
+				SHARED_INTERMEDIATE_DIR = "$(SYMROOT)/DerivedSources/$(CONFIGURATION)";
+				USE_HEADERMAP = NO;
+			};
+			name = Release;
+		};
+		6D897FE976D7AD914353B53C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				GCC_CW_ASM_SYNTAX = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_PASCAL_STRINGS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					__POSIX__,
+					_LARGEFILE_SOURCE,
+					_LARGEFILE64_SOURCE,
+					"_FILE_OFFSET_BITS=64",
+					"_DARWIN_USE_64_BIT_INODE=1",
+					"NODE_WANT_INTERNALS=1",
+					"NDEBUG=1",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_THREADSAFE_STATICS = NO;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				HEADER_SEARCH_PATHS = (
+					.,
+					"../node-sdl2",
+					../nan,
+					../../node/src,
+					../../node/deps/uv/include,
+					../../node/deps/v8/include,
+					"../../node/deps/debugger-agent/include",
+					../../node/deps/cares/include,
+					../../SDL2/include,
+					../../SDL2_image,
+				);
+				"OTHER_CFLAGS[arch=arm64]" = "-marm";
+				"OTHER_CFLAGS[arch=armv7]" = "-marm";
+				"OTHER_CFLAGS[arch=armv7s]" = "-marm";
+				PREBINDING = NO;
+				PRODUCT_NAME = "node-sdl2_image-osx";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wendif-labels",
+					"-W",
+					"-Wno-unused-parameter",
+				);
+			};
+			name = Release;
+		};
+		B8F52E76F7F3FE4402E6F3A4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				GCC_CW_ASM_SYNTAX = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_PASCAL_STRINGS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					__POSIX__,
+					_LARGEFILE_SOURCE,
+					_LARGEFILE64_SOURCE,
+					"_FILE_OFFSET_BITS=64",
+					"_DARWIN_USE_64_BIT_INODE=1",
+					"NODE_WANT_INTERNALS=1",
+					_DEBUG,
+					"DEBUG=1",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_THREADSAFE_STATICS = NO;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				HEADER_SEARCH_PATHS = (
+					.,
+					"../node-sdl2",
+					../nan,
+					../../node/src,
+					../../node/deps/uv/include,
+					../../node/deps/v8/include,
+					"../../node/deps/debugger-agent/include",
+					../../node/deps/cares/include,
+					../../SDL2/include,
+					../../SDL2_image,
+				);
+				"OTHER_CFLAGS[arch=arm64]" = "-marm";
+				"OTHER_CFLAGS[arch=armv7]" = "-marm";
+				"OTHER_CFLAGS[arch=armv7s]" = "-marm";
+				PREBINDING = NO;
+				PRODUCT_NAME = "node-sdl2_image-osx";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wendif-labels",
+					"-W",
+					"-Wno-unused-parameter",
+				);
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1A1A149D975E607E59D3D494 /* Build configuration list for PBXProject "node-sdl2_image" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0323CA18A99E38D50A603240 /* Debug */,
+				58E17148B8B79230D58022E3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 1;
+			defaultConfigurationName = Debug;
+		};
+		5E87BCA7738CBC845407B8CE /* Build configuration list for PBXNativeTarget "libnode-sdl2_image-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B8F52E76F7F3FE4402E6F3A4 /* Debug */,
+				6D897FE976D7AD914353B53C /* Release */,
+			);
+			defaultConfigurationIsVisible = 1;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8BA1DEF7DD9F370A02656CE3 /* Project object */;
+}

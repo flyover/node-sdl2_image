@@ -1,0 +1,223 @@
+/**
+ * Copyright (c) Flyover Games, LLC.  All rights reserved. 
+ *  
+ * Permission is hereby granted, free of charge, to any person 
+ * obtaining a copy of this software and associated 
+ * documentation files (the "Software"), to deal in the Software 
+ * without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to 
+ * whom the Software is furnished to do so, subject to the 
+ * following conditions: 
+ *  
+ * The above copyright notice and this permission notice shall 
+ * be included in all copies or substantial portions of the 
+ * Software. 
+ *  
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY 
+ * KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
+ * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ */
+
+#include "node-sdl2_image.h"
+
+#include <v8.h>
+#include <node.h>
+#include <SDL.h>
+#include <SDL_image.h>
+
+#include <stdlib.h> // malloc, free
+#include <string.h> // strdup
+
+#ifndef strdup
+#define strdup(str) strcpy((char*)malloc(strlen(str)+1),str)
+#endif
+
+#if defined(__ANDROID__)
+#include <android/log.h>
+#define printf(...) __android_log_print(ANDROID_LOG_INFO, "printf", __VA_ARGS__)
+#endif
+
+#define countof(_a) (sizeof(_a)/sizeof((_a)[0]))
+
+using namespace v8;
+
+namespace node_sdl2_image {
+
+// load surface
+
+class Task_IMG_Load : public node_sdl2::SimpleTask
+{
+public:
+	Persistent<Function> m_callback;
+	char* m_file;
+	SDL_Surface* m_surface;
+	char* m_error;
+public:
+	Task_IMG_Load(Handle<String> file, Handle<Function> callback) : 
+		m_file(strdup(*String::Utf8Value(file))), 
+		m_surface(NULL),
+		m_error(NULL)
+	{
+		NanAssignPersistent(m_callback, callback);
+	}
+	~Task_IMG_Load()
+	{
+		NanDisposePersistent(m_callback);
+		free(m_file); m_file = NULL; // strdup
+		if (m_surface) { SDL_FreeSurface(m_surface); m_surface = NULL; }
+		free(m_error); m_error = NULL; // strdup
+	}
+	void DoWork()
+	{
+		m_surface = IMG_Load(m_file);
+		const char* error = IMG_GetError();
+		SDL_ClearError();
+		if (error) { m_error = strdup(error); }
+	}
+	void DoAfterWork(int status)
+	{
+		NanScope();
+		Handle<Value> argv[] = { node_sdl2::WrapSurface::Hold(m_surface), NanNew<String>(m_error) };
+		NanMakeCallback(NanGetCurrentContext()->Global(), NanNew<Function>(m_callback), countof(argv), argv);
+		m_surface = NULL; // script owns pointer
+	}
+};
+
+// save surface
+
+class Task_IMG_SavePNG : public node_sdl2::SimpleTask
+{
+public:
+	Persistent<Value> m_hold_surface;
+	Persistent<Function> m_callback;
+	SDL_Surface* m_surface;
+	char* m_file;
+	int m_err;
+	char* m_error;
+public:
+	Task_IMG_SavePNG(Handle<Value> surface, Handle<String> file, Handle<Function> callback) : 
+		m_surface(node_sdl2::WrapSurface::Peek(surface)),
+		m_file(strdup(*String::Utf8Value(file))), 
+		m_err(0),
+		m_error(NULL)
+	{
+		NanAssignPersistent(m_hold_surface, surface);
+		NanAssignPersistent(m_callback, callback);
+	}
+	~Task_IMG_SavePNG()
+	{
+		NanDisposePersistent(m_hold_surface);
+		NanDisposePersistent(m_callback);
+		free(m_file); m_file = NULL; // strdup
+		free(m_error); m_error = NULL; // strdup
+	}
+	void DoWork()
+	{
+		m_err = IMG_SavePNG(m_surface, m_file);
+		const char* error = IMG_GetError();
+		SDL_ClearError();
+		if (error) { m_error = strdup(error); }
+	}
+	void DoAfterWork(int status)
+	{
+		NanScope();
+		Handle<Value> argv[] = { NanNew<Integer>(m_err), NanNew<String>(m_error) };
+		NanMakeCallback(NanGetCurrentContext()->Global(), NanNew<Function>(m_callback), countof(argv), argv);
+	}
+};
+
+MODULE_EXPORT_IMPLEMENT(IMG_Init)
+{
+	NanScope();
+	::Uint32 flags = args[0]->Uint32Value();
+	int err = IMG_Init(flags);
+	if (err < 0)
+	{
+		printf("IMG_Init error: %d\n", err);
+	}
+	NanReturnValue(NanNew<Integer>(err));
+}
+
+MODULE_EXPORT_IMPLEMENT(IMG_Quit)
+{
+	NanScope();
+	IMG_Quit();
+	NanReturnUndefined();
+}
+
+MODULE_EXPORT_IMPLEMENT(IMG_GetError)
+{
+	NanScope();
+	const char* sdl_image_error = IMG_GetError();
+	NanReturnValue(NanNew<String>(sdl_image_error));
+}
+
+MODULE_EXPORT_IMPLEMENT(IMG_ClearError)
+{
+	NanScope();
+	SDL_ClearError();
+	NanReturnUndefined();
+}
+
+MODULE_EXPORT_IMPLEMENT(IMG_Load)
+{
+	NanScope();
+	Local<String> file = Local<String>::Cast(args[0]);
+	Local<Function> callback = Local<Function>::Cast(args[1]);
+	int err = node_sdl2::SimpleTask::Run(new Task_IMG_Load(file, callback));
+	NanReturnValue(NanNew<v8::Int32>(err));
+}
+
+MODULE_EXPORT_IMPLEMENT(IMG_SavePNG)
+{
+	NanScope();
+	Local<Value> surface = args[0];
+	Local<String> file = Local<String>::Cast(args[1]);
+	Local<Function> callback = Local<Function>::Cast(args[2]);
+	int err = node_sdl2::SimpleTask::Run(new Task_IMG_SavePNG(surface, file, callback));
+	NanReturnValue(NanNew<v8::Int32>(err));
+}
+
+#if NODE_VERSION_AT_LEAST(0,11,0)
+void init(Handle<Object> exports, Handle<Value> module, Handle<Context> context)
+#else
+void init(Handle<Object> exports/*, Handle<Value> module*/)
+#endif
+{
+	NanScope();
+
+	// SDL_image.h
+
+	MODULE_CONSTANT(exports, SDL_IMAGE_MAJOR_VERSION);
+	MODULE_CONSTANT(exports, SDL_IMAGE_MINOR_VERSION);
+	MODULE_CONSTANT(exports, SDL_IMAGE_PATCHLEVEL);
+
+	MODULE_CONSTANT(exports, IMG_INIT_JPG);
+	MODULE_CONSTANT(exports, IMG_INIT_PNG);
+	MODULE_CONSTANT(exports, IMG_INIT_TIF);
+	MODULE_CONSTANT(exports, IMG_INIT_WEBP);
+
+	MODULE_EXPORT_APPLY(exports, IMG_Init);
+	MODULE_EXPORT_APPLY(exports, IMG_Quit);
+
+	MODULE_EXPORT_APPLY(exports, IMG_GetError);
+	MODULE_EXPORT_APPLY(exports, IMG_ClearError);
+
+	MODULE_EXPORT_APPLY(exports, IMG_Load);
+	MODULE_EXPORT_APPLY(exports, IMG_SavePNG);
+}
+
+} // namespace node_sdl2_image
+
+#if NODE_VERSION_AT_LEAST(0,11,0)
+NODE_MODULE_CONTEXT_AWARE_BUILTIN(node_sdl2_image, node_sdl2_image::init)
+#else
+NODE_MODULE(node_sdl2_image, node_sdl2_image::init)
+#endif
+
