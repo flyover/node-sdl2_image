@@ -167,14 +167,14 @@
 				HEADER_SEARCH_PATHS = (
 					.,
 					"../node-sdl2",
-					../nan,
-					../../node/src,
-					../../node/deps/uv/include,
-					../../node/deps/v8/include,
-					"../../node/deps/debugger-agent/include",
-					../../node/deps/cares/include,
-					../../SDL2/include,
-					../../SDL2_image,
+					../../nan,
+					../../../node/src,
+					../../../node/deps/uv/include,
+					../../../node/deps/v8/include,
+					"../../../node/deps/debugger-agent/include",
+					../../../node/deps/cares/include,
+					../../../SDL/include,
+					../../../SDL_image,
 				);
 				"OTHER_CFLAGS[arch=arm64]" = "-marm";
 				"OTHER_CFLAGS[arch=armv7]" = "-marm";
@@ -217,14 +217,14 @@
 				HEADER_SEARCH_PATHS = (
 					.,
 					"../node-sdl2",
-					../nan,
-					../../node/src,
-					../../node/deps/uv/include,
-					../../node/deps/v8/include,
-					"../../node/deps/debugger-agent/include",
-					../../node/deps/cares/include,
-					../../SDL2/include,
-					../../SDL2_image,
+					../../nan,
+					../../../node/src,
+					../../../node/deps/uv/include,
+					../../../node/deps/v8/include,
+					"../../../node/deps/debugger-agent/include",
+					../../../node/deps/cares/include,
+					../../../SDL/include,
+					../../../SDL_image,
 				);
 				"OTHER_CFLAGS[arch=arm64]" = "-marm";
 				"OTHER_CFLAGS[arch=armv7]" = "-marm";

@@ -1,9 +1,9 @@
 {
     'variables': {
         'OS%': 'ios',
-        'NODE_PATH': '../../node',
-        'SDL2_PATH': '../../SDL2',
-        'SDL2_IMAGE_PATH': '../../SDL2_image',
+        'NODE_PATH': '../../../node',
+        'SDL2_PATH': '../../../SDL',
+        'SDL2_IMAGE_PATH': '../../../SDL_image',
     },
     'xcode_settings': {
         'ALWAYS_SEARCH_USER_PATHS': 'NO',
@@ -86,7 +86,7 @@
             ],
             'include_dirs': [
                 '.',
-                '<!(node -e "require(\'node-sdl2/include\')")',
+                '<!(node -e "require(\'@flyover/node-sdl2/include\')")',
                 '<!(node -e "require(\'nan\')")',
                 '<(NODE_PATH)/src',
                 '<(NODE_PATH)/deps/uv/include',
@@ -99,7 +99,7 @@
             'direct_dependent_settings': {
                 'include_dirs': [
                     '.',
-                    '<!(node -e "require(\'node-sdl2/include\')")',
+                    '<!(node -e "require(\'@flyover/node-sdl2/include\')")',
                     '<!(node -e "require(\'nan\')")',
                     '<(SDL2_PATH)/include',
                     '<(SDL2_IMAGE_PATH)',
