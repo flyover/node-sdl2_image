@@ -6,7 +6,7 @@
             'include_dirs':
             [
                 "<(module_root_dir)",
-                "<!(node -e \"require('node-sdl2/include')\")",
+                "<!(node -e \"require('@flyover/node-sdl2/include')\")",
                 "<!(node -e \"require('nan')\")"
             ],
             'sources':
@@ -45,7 +45,7 @@
                         'copies':
                         [
                             {
-                                'destination': "${USERPROFILE}/bin",
+                                'destination': "<!(echo %USERPROFILE%)/bin",
                                 'files':
                                 [
                                     "$(SDL2_IMAGE_ROOT)/lib/x64/SDL2_image.dll",
