@@ -27,22 +27,17 @@
 #ifndef _NODE_SDL2_IMAGE_H_
 #define _NODE_SDL2_IMAGE_H_
 
-#include <v8.h>
-#include <node.h>
 #include <nan.h>
+
 #include <SDL.h>
 #include <SDL_image.h>
+
 #include "node-sdl2.h"
 
 namespace node_sdl2_image {
 
-#if NODE_VERSION_AT_LEAST(0,11,0)
-void init(v8::Handle<v8::Object> exports, v8::Handle<v8::Value> module, v8::Handle<v8::Context> context);
-#else
-void init(v8::Handle<v8::Object> exports/*, v8::Handle<v8::Value> module*/);
-#endif
+NAN_MODULE_INIT(init);
 
 } // namespace node_sdl2_image
 
 #endif // _NODE_SDL2_IMAGE_H_
-

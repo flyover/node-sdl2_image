@@ -26,11 +26,6 @@
 
 #include "node-sdl2_image.h"
 
-#include <v8.h>
-#include <node.h>
-#include <SDL.h>
-#include <SDL_image.h>
-
 #include <stdlib.h> // malloc, free
 #include <string.h> // strdup
 
@@ -45,30 +40,28 @@
 
 #define countof(_a) (sizeof(_a)/sizeof((_a)[0]))
 
-using namespace v8;
-
 namespace node_sdl2_image {
 
 // load surface
 
-class Task_IMG_Load : public node_sdl2::SimpleTask
+class Task_IMG_Load : public Nanx::SimpleTask
 {
 public:
-	Persistent<Function> m_callback;
+	Nan::Persistent<v8::Function> m_callback;
 	char* m_file;
 	SDL_Surface* m_surface;
 	char* m_error;
 public:
-	Task_IMG_Load(Handle<String> file, Handle<Function> callback) : 
-		m_file(strdup(*String::Utf8Value(file))), 
+	Task_IMG_Load(v8::Local<v8::String> file, v8::Local<v8::Function> callback) : 
+		m_file(strdup(*v8::String::Utf8Value(file))), 
 		m_surface(NULL),
 		m_error(NULL)
 	{
-		NanAssignPersistent(m_callback, callback);
+		m_callback.Reset(callback);
 	}
 	~Task_IMG_Load()
 	{
-		NanDisposePersistent(m_callback);
+		m_callback.Reset();
 		free(m_file); m_file = NULL; // strdup
 		if (m_surface) { SDL_FreeSurface(m_surface); m_surface = NULL; }
 		free(m_error); m_error = NULL; // strdup
@@ -82,38 +75,38 @@ public:
 	}
 	void DoAfterWork(int status)
 	{
-		NanScope();
-		Handle<Value> argv[] = { node_sdl2::WrapSurface::Hold(m_surface), NanNew<String>(m_error) };
-		NanMakeCallback(NanGetCurrentContext()->Global(), NanNew<Function>(m_callback), countof(argv), argv);
+		Nan::HandleScope scope;
+		v8::Local<v8::Value> argv[] = { node_sdl2::WrapSurface::Hold(m_surface), NANX_STRING(m_error) };
+		Nan::MakeCallback(Nan::GetCurrentContext()->Global(), Nan::New<v8::Function>(m_callback), countof(argv), argv);
 		m_surface = NULL; // script owns pointer
 	}
 };
 
 // save surface
 
-class Task_IMG_SavePNG : public node_sdl2::SimpleTask
+class Task_IMG_SavePNG : public Nanx::SimpleTask
 {
 public:
-	Persistent<Value> m_hold_surface;
-	Persistent<Function> m_callback;
+	Nan::Persistent<v8::Value> m_hold_surface;
+	Nan::Persistent<v8::Function> m_callback;
 	SDL_Surface* m_surface;
 	char* m_file;
 	int m_err;
 	char* m_error;
 public:
-	Task_IMG_SavePNG(Handle<Value> surface, Handle<String> file, Handle<Function> callback) : 
+	Task_IMG_SavePNG(v8::Local<v8::Value> surface, v8::Local<v8::String> file, v8::Local<v8::Function> callback) : 
 		m_surface(node_sdl2::WrapSurface::Peek(surface)),
-		m_file(strdup(*String::Utf8Value(file))), 
+		m_file(strdup(*v8::String::Utf8Value(file))), 
 		m_err(0),
 		m_error(NULL)
 	{
-		NanAssignPersistent(m_hold_surface, surface);
-		NanAssignPersistent(m_callback, callback);
+		m_hold_surface.Reset(surface);
+		m_callback.Reset(callback);
 	}
 	~Task_IMG_SavePNG()
 	{
-		NanDisposePersistent(m_hold_surface);
-		NanDisposePersistent(m_callback);
+		m_hold_surface.Reset();
+		m_callback.Reset();
 		free(m_file); m_file = NULL; // strdup
 		free(m_error); m_error = NULL; // strdup
 	}
@@ -126,98 +119,80 @@ public:
 	}
 	void DoAfterWork(int status)
 	{
-		NanScope();
-		Handle<Value> argv[] = { NanNew<Integer>(m_err), NanNew<String>(m_error) };
-		NanMakeCallback(NanGetCurrentContext()->Global(), NanNew<Function>(m_callback), countof(argv), argv);
+		Nan::HandleScope scope;
+		v8::Local<v8::Value> argv[] = { Nan::New(m_err), NANX_STRING(m_error) };
+		Nan::MakeCallback(Nan::GetCurrentContext()->Global(), Nan::New<v8::Function>(m_callback), countof(argv), argv);
 	}
 };
 
-MODULE_EXPORT_IMPLEMENT(IMG_Init)
+NANX_EXPORT(IMG_Init)
 {
-	NanScope();
-	::Uint32 flags = args[0]->Uint32Value();
+	::Uint32 flags = NANX_Uint32(info[0]);
 	int err = IMG_Init(flags);
 	if (err < 0)
 	{
 		printf("IMG_Init error: %d\n", err);
 	}
-	NanReturnValue(NanNew<Integer>(err));
+	info.GetReturnValue().Set(Nan::New(err));
 }
 
-MODULE_EXPORT_IMPLEMENT(IMG_Quit)
+NANX_EXPORT(IMG_Quit)
 {
-	NanScope();
 	IMG_Quit();
-	NanReturnUndefined();
 }
 
-MODULE_EXPORT_IMPLEMENT(IMG_GetError)
+NANX_EXPORT(IMG_GetError)
 {
-	NanScope();
 	const char* sdl_image_error = IMG_GetError();
-	NanReturnValue(NanNew<String>(sdl_image_error));
+	info.GetReturnValue().Set(NANX_STRING(sdl_image_error));
 }
 
-MODULE_EXPORT_IMPLEMENT(IMG_ClearError)
+NANX_EXPORT(IMG_ClearError)
 {
-	NanScope();
 	SDL_ClearError();
-	NanReturnUndefined();
 }
 
-MODULE_EXPORT_IMPLEMENT(IMG_Load)
+NANX_EXPORT(IMG_Load)
 {
-	NanScope();
-	Local<String> file = Local<String>::Cast(args[0]);
-	Local<Function> callback = Local<Function>::Cast(args[1]);
-	int err = node_sdl2::SimpleTask::Run(new Task_IMG_Load(file, callback));
-	NanReturnValue(NanNew<v8::Int32>(err));
+	v8::Local<v8::String> file = v8::Local<v8::String>::Cast(info[0]);
+	v8::Local<v8::Function> callback = v8::Local<v8::Function>::Cast(info[1]);
+	int err = Nanx::SimpleTask::Run(new Task_IMG_Load(file, callback));
+	info.GetReturnValue().Set(Nan::New(err));
 }
 
-MODULE_EXPORT_IMPLEMENT(IMG_SavePNG)
+NANX_EXPORT(IMG_SavePNG)
 {
-	NanScope();
-	Local<Value> surface = args[0];
-	Local<String> file = Local<String>::Cast(args[1]);
-	Local<Function> callback = Local<Function>::Cast(args[2]);
-	int err = node_sdl2::SimpleTask::Run(new Task_IMG_SavePNG(surface, file, callback));
-	NanReturnValue(NanNew<v8::Int32>(err));
+	v8::Local<v8::Value> surface = info[0];
+	v8::Local<v8::String> file = v8::Local<v8::String>::Cast(info[1]);
+	v8::Local<v8::Function> callback = v8::Local<v8::Function>::Cast(info[2]);
+	int err = Nanx::SimpleTask::Run(new Task_IMG_SavePNG(surface, file, callback));
+	info.GetReturnValue().Set(Nan::New(err));
 }
 
-#if NODE_VERSION_AT_LEAST(0,11,0)
-void init(Handle<Object> exports, Handle<Value> module, Handle<Context> context)
-#else
-void init(Handle<Object> exports/*, Handle<Value> module*/)
-#endif
+NAN_MODULE_INIT(init)
 {
-	NanScope();
 
 	// SDL_image.h
 
-	MODULE_CONSTANT(exports, SDL_IMAGE_MAJOR_VERSION);
-	MODULE_CONSTANT(exports, SDL_IMAGE_MINOR_VERSION);
-	MODULE_CONSTANT(exports, SDL_IMAGE_PATCHLEVEL);
+	NANX_CONSTANT(target, SDL_IMAGE_MAJOR_VERSION);
+	NANX_CONSTANT(target, SDL_IMAGE_MINOR_VERSION);
+	NANX_CONSTANT(target, SDL_IMAGE_PATCHLEVEL);
 
-	MODULE_CONSTANT(exports, IMG_INIT_JPG);
-	MODULE_CONSTANT(exports, IMG_INIT_PNG);
-	MODULE_CONSTANT(exports, IMG_INIT_TIF);
-	MODULE_CONSTANT(exports, IMG_INIT_WEBP);
+	NANX_CONSTANT(target, IMG_INIT_JPG);
+	NANX_CONSTANT(target, IMG_INIT_PNG);
+	NANX_CONSTANT(target, IMG_INIT_TIF);
+	NANX_CONSTANT(target, IMG_INIT_WEBP);
 
-	MODULE_EXPORT_APPLY(exports, IMG_Init);
-	MODULE_EXPORT_APPLY(exports, IMG_Quit);
+	NANX_EXPORT_APPLY(target, IMG_Init);
+	NANX_EXPORT_APPLY(target, IMG_Quit);
 
-	MODULE_EXPORT_APPLY(exports, IMG_GetError);
-	MODULE_EXPORT_APPLY(exports, IMG_ClearError);
+	NANX_EXPORT_APPLY(target, IMG_GetError);
+	NANX_EXPORT_APPLY(target, IMG_ClearError);
 
-	MODULE_EXPORT_APPLY(exports, IMG_Load);
-	MODULE_EXPORT_APPLY(exports, IMG_SavePNG);
+	NANX_EXPORT_APPLY(target, IMG_Load);
+	NANX_EXPORT_APPLY(target, IMG_SavePNG);
 }
 
 } // namespace node_sdl2_image
 
-#if NODE_VERSION_AT_LEAST(0,11,0)
-NODE_MODULE_CONTEXT_AWARE_BUILTIN(node_sdl2_image, node_sdl2_image::init)
-#else
 NODE_MODULE(node_sdl2_image, node_sdl2_image::init)
-#endif
-

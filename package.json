@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@flyover/node-sdl2": "^0.0",
-    "nan": "1.x"
+    "nan": "2.x"
   },
   "scripts": {
     "install": "node-gyp rebuild"
