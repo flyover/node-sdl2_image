@@ -1,7 +1,7 @@
 {
     'variables': {
         'OS%': 'ios',
-        'NODE_PATH': '../../../node',
+        'NODE_PATH': '../../../node-v0.x-archive',
         'SDL2_PATH': '../../../SDL',
         'SDL2_IMAGE_PATH': '../../../SDL_image',
     },
