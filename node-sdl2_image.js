@@ -24,11 +24,38 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-var sdl2_image = null;
-try { sdl2_image = sdl2_image || require('./build/Release/node-sdl2_image.node'); } catch (err) {}
-try { sdl2_image = sdl2_image || process._linkedBinding('node_sdl2_image'); } catch (err) {}
-try { sdl2_image = sdl2_image || process.binding('node_sdl2_image'); } catch (err) {}
-module.exports = sdl2_image;
+var node_sdl2_image = null;
+try { node_sdl2_image = node_sdl2_image || require('./build/Release/node-sdl2_image.node'); } catch (err) {}
+try { node_sdl2_image = node_sdl2_image || process._linkedBinding('node_sdl2_image'); } catch (err) {}
+try { node_sdl2_image = node_sdl2_image || process.binding('node_sdl2_image'); } catch (err) {}
+module.exports = node_sdl2_image;
 
-sdl2_image.version = sdl2_image.version || sdl2_image.SDL_IMAGE_MAJOR_VERSION + "." + sdl2_image.SDL_IMAGE_MINOR_VERSION + "." + sdl2_image.SDL_IMAGE_PATCHLEVEL;
+node_sdl2_image.version = node_sdl2_image.version || node_sdl2_image.SDL_IMAGE_MAJOR_VERSION + "." + node_sdl2_image.SDL_IMAGE_MINOR_VERSION + "." + node_sdl2_image.SDL_IMAGE_PATCHLEVEL;
 
+node_sdl2_image.IMG_CheckError = node_sdl2_image.IMG_CheckError || function ()
+{
+	var error = node_sdl2_image.IMG_GetError(); node_sdl2_image.IMG_ClearError();
+	if (error) { console.error("SDL_image", error); }
+	return error;
+};
+
+/// var node_sdl2_image = require('@flyover/node-sdl2_image');
+/// var sdl_image = node_sdl2_image.IMG();
+/// node_sdl2_image.IMG_* -> sdl_image.*
+node_sdl2_image.IMG = function (out) {
+	out = out || {};
+	var re = /^(IMG_)(.*)/;
+	for (var key in node_sdl2_image) {
+		var match = key.match(re);
+		if (match && match[2]) {
+			//console.log(key, match[2]);
+			out[match[2]] = node_sdl2_image[key];
+		} else {
+			//console.log("!!!", key);
+			out[key] = node_sdl2_image[key];
+		}
+	}
+	return out;
+}
+
+//node_sdl2_image.IMG();
