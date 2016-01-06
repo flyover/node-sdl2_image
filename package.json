@@ -1,6 +1,6 @@
 {
   "name": "@flyover/node-sdl2_image",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Flyover Games",
   "homepage": "http://flyovergames.com",
   "description": "Node SDL2_image Package",
